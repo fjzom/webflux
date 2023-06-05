@@ -18,8 +18,11 @@ public class WebFluxProjectApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        Flux<String> names  = Flux.just("Juan", "Pedro",  "Santiago")
+        Flux<String> names  = Flux.just("Maria", "Juan", "Peter",  "Santiago")
                 .map(name-> name.toUpperCase())
+                .filter(name -> {
+                    return name.length() == 5 ;
+                })
                 .doOnNext(n-> {
                     if (n.isEmpty())   throw new RuntimeException();
                 });
