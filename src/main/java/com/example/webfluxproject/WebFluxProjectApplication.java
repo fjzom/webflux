@@ -6,6 +6,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import reactor.core.publisher.Flux;
 
+import java.util.Objects;
+
 @Slf4j
 @SpringBootApplication
 public class WebFluxProjectApplication implements CommandLineRunner {
@@ -16,7 +18,12 @@ public class WebFluxProjectApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        Flux<String> names  = Flux.just("Juan", "Pedro", "Santiago");
-        names.subscribe(n-> log.info(n));
+        Flux<String> names  = Flux.just("Juan", "Pedro",  "Santiago")
+                .doOnNext(n-> {
+                    if (n.isEmpty())   throw new RuntimeException();
+                });
+        names.subscribe(n-> log.info(n),
+                e-> log.error("Empty found", e),
+                ()-> log.info("Process completed"));
     }
 }
